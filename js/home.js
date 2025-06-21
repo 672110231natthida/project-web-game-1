@@ -142,4 +142,56 @@ const sliderAction = () => {
     wraper.addEventListener('mouseenter', clearInterval(timeoutId))
     wraper.addEventListener('mouseleave',infinityScroll)
 }
+// Sample cart setup (for demo)
+   const sampleCart = [
+            { name: "Assassin Creed", price: 20 },
+            { name: "Cyberpunk 2077", price: 30 },
+            { name: "Elden Ring", price: 40 }
+        ];
+        if (!localStorage.getItem("cart")) {
+            localStorage.setItem("cart", JSON.stringify(sampleCart));
+        }
 
+        const checkoutBtn = document.getElementById("checkoutBtn");
+        const checkoutPage = document.getElementById("checkoutPage");
+        const cartItemsContainer = document.getElementById("cartItems");
+        const totalPrice = document.getElementById("totalPrice");
+        const payBtn = document.getElementById("payBtn");
+
+        checkoutBtn.addEventListener("click", () => {
+            checkoutPage.style.display = "block";
+            showCart();
+        });
+
+        function showCart() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cartItemsContainer.innerHTML = "";
+            let total = 0;
+            cart.forEach((item, index) => {
+                const itemDiv = document.createElement("div");
+                itemDiv.innerHTML = `
+      <p>${item.name} - $${item.price} 
+        <button onclick="removeItem(${index})">Remove</button>
+      </p>
+    `;
+                cartItemsContainer.appendChild(itemDiv);
+                total += item.price;
+            });
+            totalPrice.innerText = `Total: $${total}`;
+        }
+
+        function removeItem(index) {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            cart.splice(index, 1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            showCart();
+        }
+
+        payBtn.addEventListener("click", () => {
+            const confirmed = confirm("Do you want to proceed with payment?");
+            if (confirmed) {
+                alert("Payment Successful!");
+                localStorage.removeItem("cart");
+                showCart();
+            }
+        });
