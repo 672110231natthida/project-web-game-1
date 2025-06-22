@@ -196,4 +196,116 @@ payBtn.addEventListener("click", () => {
     }
 });
 
+//เข้าระบบ T_T
+window.addEventListener("DOMContentLoaded", () => {
+    // ตรวจสอบว่าผู้ใช้ล็อกอินหรือยัง
+    function getCurrentUser() {
+        return localStorage.getItem("loggedInUser");
+    }
+
+    // ฟังก์ชันล็อกอินจำลอง (สมัคร = แค่พิมพ์ชื่อแล้วถือว่าเข้าได้เลย)
+    window.loginUser = function () {
+        const username = prompt("กรุณาใส่ชื่อผู้ใช้:");
+        if (username) {
+            localStorage.setItem("loggedInUser", username);
+            alert("ล็อกอินสำเร็จ! ผู้ใช้: " + username);
+        }
+    };
+
+    // ฟังก์ชันเพิ่มสินค้า
+    window.addToCart = function (name, price) {
+        const user = getCurrentUser();
+        if (!user) {
+            alert("กรุณาล็อกอินก่อนเพิ่มสินค้า!");
+            return;
+        }
+
+        let cartKey = `cart_${user}`;
+        let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        cart.push({ name, price });
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        alert(`เพิ่ม ${name} เข้าตะกร้าเรียบร้อย!`);
+    };
+
+    // ฟังก์ชันแสดงตะกร้าเมื่อกดปุ่ม Checkout
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    const cartItemsContainer = document.getElementById("cartItems");
+    const totalPrice = document.getElementById("totalPrice");
+    const payBtn = document.getElementById("payBtn");
+    const checkoutPage = document.getElementById("checkoutPage");
+
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener("click", () => {
+            const user = getCurrentUser();
+            if (!user) {
+                alert("กรุณาล็อกอินก่อนดูตะกร้า!");
+                return;
+            }
+
+            const cart = JSON.parse(localStorage.getItem(`cart_${user}`)) || [];
+            let total = 0;
+            cartItemsContainer.innerHTML = "";
+
+            cart.forEach((item, index) => {
+                const itemDiv = document.createElement("div");
+                itemDiv.innerHTML = `
+          <p>${item.name} - $${item.price}
+            <button onclick="removeItem(${index})">ลบ</button>
+          </p>`;
+                cartItemsContainer.appendChild(itemDiv);
+                total += item.price;
+            });
+
+            totalPrice.textContent = `Total: $${total}`;
+            checkoutPage.style.display = "block";
+        });
+    }
+
+    window.removeItem = function (index) {
+        const user = getCurrentUser();
+        let cartKey = `cart_${user}`;
+        let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+        cart.splice(index, 1);
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        checkoutBtn.click(); // refresh
+    };
+
+    if (payBtn) {
+        payBtn.addEventListener("click", () => {
+            const user = getCurrentUser();
+            if (!user) return;
+
+            const confirmPay = confirm("คุณต้องการชำระเงินใช่หรือไม่?");
+            if (confirmPay) {
+                alert("ชำระเงินสำเร็จ!");
+                localStorage.removeItem(`cart_${user}`);
+                checkoutBtn.click(); // refresh
+            }
+        });
+    }
+    //บราๆๆๆ
+    const userDisplay = document.getElementById("userDisplay");
+const currentUser = localStorage.getItem("loggedInUser");
+
+if (userDisplay) {
+  if (currentUser) {
+    userDisplay.textContent = "👤 " + currentUser;
+  } else {
+    userDisplay.innerHTML = `<a href="login.html" class="header__link signin">SIGN IN</a>`;
+  }
+}
+
+});
+
+//กร้ี้กๆ
+const userDisplay = document.getElementById("userDisplay");
+const currentUser = localStorage.getItem("loggedInUser");
+
+if (userDisplay) {
+  if (currentUser) {
+    userDisplay.textContent = "👤 " + currentUser;
+  } else {
+    userDisplay.innerHTML = `<a href="login.html" class="header__link signin">SIGN IN</a>`;
+  }
+}
 
