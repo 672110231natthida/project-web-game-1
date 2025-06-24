@@ -44,9 +44,19 @@
                             <a href="details.html" class="header__link">Product Details</a>
                         </li>
 
-                        <li class="list__items">
-                            <a href="login.html" class="header__link signin">SIGN IN</a>
-                        </li>
+                        <!-- ตะกร้าแสดงจำนวนสินค้า -->
+                        <a href="#" id="checkoutBtn">
+                            <div class="image-container">
+                                <link rel="stylesheet" href="number-cart.css">
+                                <img src="images/grocery-store.png" alt="รูปภาพหลัก">
+                                <div class="overlay-text">
+                                    <ul id="cart-items"></ul>
+                                    <span id="total-number">0</span>
+                                </div>
+                            </div>
+                        </a>
+
+
                     </ul>
                     <div class="menu__btn">
                         <div class="hamburger__menu"></div>
@@ -125,6 +135,20 @@
 
                     <div class="trendgames" id="productList">
                         <!-- สินค้าจะแสดงตรงนี้ -->
+
+                        <div>
+                            <!-- ตย.แสดงจำนวนสินค้าตรงตะกร้า -->
+                            <h3>รายการสินค้า</h3>
+                            <div>
+                                <p>สินค้า A - 100 บาท <button onclick="addToCart('สินค้า A', 1)">เพิ่ม</button></p>
+                                <p>สินค้า B - 150 บาท <button onclick="addToCart('สินค้า B', 1)">เพิ่ม</button></p>
+                                <p>สินค้า C - 200 บาท <button onclick="addToCart('สินค้า C', 1)">เพิ่ม</button></p>
+                            </div>
+
+                            <script src="update-number.js"></script>
+
+                        </div>
+
                     </div>
 
                     <!-- ปุ่มเลื่อน -->
