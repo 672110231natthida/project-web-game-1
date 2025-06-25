@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our shop - Lugx gaming website</title>
+  <link rel="icon" href="images/favicon.png" />
+  <link rel="stylesheet" href="styles/shop.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+
+<body>
+
+  <div class="webpage">
+    <nav>
+      <div class="container">
+        <div class="nav__bar">
+          <div class="logo">
+            <img src="images/logo.png" alt="Logo" />
+          </div>
+          <ul class="header__list">
+            <li><a href="index.html" class="header__link">Home</a></li>
+            <li><a href="ourshop.html" class="header__link active">Our Shop</a></li>
+            <li><a href="details.html" class="header__link">Product Details</a></li>
+            <li><a href="login.html" class="header__link signin">SIGN IN</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="main">
+      <section class="main__top-sect">
+        <div class="container">
+          <h2 class="main__top-title">OUR SHOP</h2>
+          <p class="main__top-desc">Home > Our Shop</p>
+        </div>
+      </section>
+
+      <!-- ช่องค้นหาสินค้า -->
+      <section class="controls container mt-4">
+        <label for="searchInput">ค้นหาสินค้า:</label>
+        <input type="text" id="searchInput" placeholder="พิมพ์ชื่อสินค้าที่ต้องการค้นหา..." />
+        <button id="searchBtn">ค้นหา</button>
+      </section>
+
+      <!-- หมวดหมู่สินค้า -->
+      <section class="shop-controls container mt-4">
+        <label for="categorySelect">เลือกหมวดหมู่:</label>
+        <select id="categorySelect" class="form-select mb-3" style="width: 200px;">
+          <option value="">ทั้งหมด</option>
+          <!-- หมวดหมู่จะถูกเพิ่มจาก JavaScript -->
+        </select>
+        <button id="addCategoryBtn">เพิ่มหมวดหมู่ใหม่</button>
+      </section>
+
+      <!-- แสดงสินค้าจาก API -->
+      <section class="product-list container">
+        <div id="productList" class="row">
+          <!-- สินค้าจากฐานข้อมูลจะแสดงตรงนี้ -->
+        </div>
+      </section>
+
+      <!-- ฟอร์มเพิ่มสินค้า -->
+      <section class="container mt-4" id="adminAddProductForm">
+        <h3>เพิ่มสินค้าใหม่</h3>
+        <form id="addProductForm">
+          <input type="text" id="name" placeholder="ชื่อสินค้า" required />
+          <input type="text" id="description" placeholder="คำอธิบาย" required />
+          <input type="number" id="price" placeholder="ราคา" required />
+          <select id="category" required>
+            <option value="">เลือกหมวดหมู่</option>
+            <!-- หมวดหมู่จะถูกเพิ่มจาก JavaScript -->
+          </select>
+          <input type="text" id="image" placeholder="URL รูปภาพ" required />
+          <button type="submit">เพิ่มสินค้า</button>
+        </form>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="copy__right">
+          <h3 class="webdeveloper">Website developer : <a href="#">Your Name</a></h3>
+          <h3 class="disignby">Design by : <a href="#">TemplateMo</a></h3>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/catalog.js"></script> <!-- เพิ่ม script สำหรับ catalog.js -->
+  <script>
+    // ฟังก์ชันตรวจสอบว่าเป็นแอดมินหรือไม่
+    function isAdmin() {
+      return localStorage.getItem('isAdmin') === 'true'; // ตรวจสอบจาก localStorage
+    }
+
+    // ซ่อนฟอร์มเพิ่มสินค้าในหน้าเว็บไซต์สำหรับลูกค้า
+    window.addEventListener('DOMContentLoaded', function () {
+      if (!isAdmin()) {
+        document.getElementById('adminAddProductForm').style.display = 'none'; // ซ่อนฟอร์มเพิ่มสินค้า
+      }
+      loadCategories(); // โหลดหมวดหมู่
+      loadProducts();   // โหลดสินค้าทั้งหมด
+    });
+
+    // ฟังก์ชันโหลดหมวดหมู่จาก backend
+    function loadCategories() {
+      fetch('http://localhost:3000/api/categories')
+        .then(res => res.json())
+        .then(categories => {
+          const categorySelect = document.getElementById('category');
+          const categorySelectForSearch = document.getElementById('categorySelect');
+          categorySelect.innerHTML = '<option value="">เลือกหมวดหมู่</option>'; // ล้างตัวเลือกเก่า
+          categorySelectForSearch.innerHTML = '<option value="">ทั้งหมด</option>'; // ล้างตัวเลือกเก่า
+
+          // เพิ่มหมวดหมู่ที่มีอยู่แล้ว
+          categories.forEach(category => {
+            categorySelect.innerHTML += `<option value="${category.name}">${category.name}</option>`;
+            categorySelectForSearch.innerHTML += `<option value="${category.name}">${category.name}</option>`;
+          });
+        })
+        .catch(err => {
+          console.error('Error loading categories:', err);
+        });
+    }
+
+    // ฟังก์ชันเพิ่มหมวดหมู่ใหม่
+    document.getElementById('addCategoryBtn').addEventListener('click', function () {
+      const newCategory = prompt('กรอกชื่อหมวดหมู่ใหม่:');
+      if (newCategory) {
+        // ส่งหมวดหมู่ใหม่ไปที่ backend
+        fetch('http://localhost:3000/api/categories', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ category: newCategory })
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert('หมวดหมู่ใหม่ถูกเพิ่มแล้ว');
+            loadCategories(); // รีเฟรชหมวดหมู่หลังจากเพิ่มใหม่
+          })
+          .catch(err => {
+            console.error('Error adding category:', err);
+          });
+      }
+    });
+
+    // ฟังก์ชันเพิ่มสินค้า
+    document.getElementById('addProductForm').addEventListener('submit', function (e) {
+      e.preventDefault();  // ป้องกันการรีเฟรชหน้า
+
+      // รับค่าจากฟอร์ม
+      const name = document.getElementById('name').value;
+      const description = document.getElementById('description').value;
+      const price = document.getElementById('price').value;
+      const category = document.getElementById('category').value;
+      const image = document.getElementById('image').value;
+
+      // ส่งข้อมูลไปที่ backend (API)
+      fetch('http://localhost:3000/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description, price, category, image })
+      })
+        .then(response => response.json())
+        .then(data => {
+          alert('สินค้าเพิ่มสำเร็จ!');
+          document.getElementById('addProductForm').reset();  // รีเซ็ตฟอร์ม
+          loadProducts();  // โหลดสินค้าทั้งหมดใหม่
+        })
+        .catch(err => console.error('Error:', err));
+    });
+
+    // ฟังก์ชันโหลดสินค้า
+    function loadProducts() {
+      fetch('http://localhost:3000/api/products')
+        .then(res => res.json())
+        .then(products => {
+          const container = document.getElementById('productList');
+          container.innerHTML = ''; // เคลียร์ข้อมูลเก่า
+
+          if (products.length === 0) {
+            container.innerHTML = `<p>ไม่พบสินค้าตามที่ค้นหา</p>`;
+            return;
+          }
+
+          products.forEach(p => {
+            container.innerHTML += `
+              <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                  <img src="${p.image}" class="card-img-top" alt="${p.name}">
+                  <div class="card-body">
+                    <h5 class="card-title">${p.name}</h5>
+                    <p class="card-text">${p.description}</p>
+                    <p class="card-text text-danger"><strong>${p.price} บาท</strong></p>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+        })
+        .catch(err => {
+          console.error('เกิดข้อผิดพลาดในการโหลดสินค้า:', err);
+        });
+    }
+  </script>
+
+</body>
+
+</html>

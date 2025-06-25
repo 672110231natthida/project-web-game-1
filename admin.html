@@ -1,0 +1,19 @@
+<body>
+  <h2>รายชื่อผู้เคยเข้าสู่ระบบ</h2>
+  <ul id="userList"></ul>
+
+  <script>
+    const history = JSON.parse(localStorage.getItem("loginHistory")) || [];
+    const userList = document.getElementById("userList");
+
+    if (history.length === 0) {
+      userList.innerHTML = "<li>ยังไม่มีผู้ใช้งาน</li>";
+    } else {
+      history.forEach(user => {
+        const li = document.createElement("li");
+        li.textContent = user;
+        userList.appendChild(li);
+      });
+    }
+  </script>
+</body>

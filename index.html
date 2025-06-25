@@ -137,7 +137,7 @@
 
         </main>
 
-        
+
 
         <footer class="footer">
             <div class="container">
@@ -150,7 +150,9 @@
     </div>
 
     <script src="js/home.js"></script>
-    <script src="js/catalog.js"></script> <!-- เพิ่ม script สำหรับ catalog.js -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- เพิ่ม script สำหรับ catalog.js -->
     <script>
         let currentPage = 1;
         const itemsPerPage = 4; // จำนวนสินค้าแสดงต่อหน้า
@@ -212,6 +214,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             loadProducts(currentPage);
         });
+
     </script>
 </body>
 

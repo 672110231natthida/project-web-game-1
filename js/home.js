@@ -1,10 +1,9 @@
-const $ = document
+document.querySelector
 
 // preloader
 
-const preLoader = $.querySelector('.preloader')
-const webPage = $.querySelector('.webpage')
-
+const preLoader = document.querySelector('.preloader');
+const webPage = document.querySelector('.webpage');
 function loadPage() {
     preLoader.classList.add('loaded')
     webPage.classList.remove('hidden')
@@ -17,8 +16,8 @@ window.addEventListener('load', () => {
 
 // hamburger menu 
 
-const menuBtn = $.querySelector('.menu__btn')
-const navBar = $.querySelector(".nav__bar ")
+const menuBtn = document.querySelector('.menu__btn');
+const navBar = document.querySelector(".nav__bar");
 
 menuBtn.addEventListener('click', function () {
     menuBtn.classList.toggle('active')
@@ -32,11 +31,11 @@ document.addEventListener('click', function (event) {
     }
 })
 
-$.querySelectorAll('.header__link').forEach(function (link) {
+document.querySelectorAll('.header__link').forEach(function (link) {
     link.addEventListener('click', function () {
-        closeMenu()
-    })
-})
+        closeMenu();
+    });
+});
 
 function closeMenu() {
     menuBtn.classList.remove('active')
@@ -62,11 +61,12 @@ window.addEventListener('scroll', function () {
 
 
 const sliderAction = () => {
-    const wraper = $.querySelector('.category__wraper')
-    const carousel = $.querySelector('.category__carousel')
-    const arrowBtns = $.querySelectorAll('.category__wraper i')
-    const firstCardWidth = $.querySelector('.category__card').offsetWidth
-    const carouselChildren = [...carousel.children]
+    const wraper = document.querySelector('.category__wraper');
+    const carousel = document.querySelector('.category__carousel');
+    const arrowBtns = document.querySelectorAll('.category__wraper i');
+    const firstCardWidth = document.querySelector('.category__card').offsetWidth;
+    const carouselChildren = [...carousel.children];
+
 
     let isDragging = false, startX, startScrollLeft, timeoutId
 
@@ -139,7 +139,7 @@ const sliderAction = () => {
     carousel.addEventListener('mousemove', dragging)
     document.addEventListener('mouseup', dragStop)
     carousel.addEventListener('scroll', infinityScroll)
-    wraper.addEventListener('mouseenter', clearInterval(timeoutId))
+    wraper.addEventListener('mouseenter', () => clearInterval(timeoutId));
     wraper.addEventListener('mouseleave', infinityScroll)
 }
 // Sample cart setup (for demo)
@@ -244,15 +244,15 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     //บราๆๆๆ
     const userDisplay = document.getElementById("userDisplay");
-const currentUser = localStorage.getItem("loggedInUser");
+    const currentUser = localStorage.getItem("loggedInUser");
 
-if (userDisplay) {
-  if (currentUser) {
-    userDisplay.textContent = "👤 " + currentUser;
-  } else {
-    userDisplay.innerHTML = `<a href="login.html" class="header__link signin">SIGN IN</a>`;
-  }
-}
+    if (userDisplay) {
+        if (currentUser) {
+            userDisplay.textContent = "👤 " + currentUser;
+        } else {
+            userDisplay.innerHTML = `<a href="login.html" class="header__link signin">SIGN IN</a>`;
+        }
+    }
 
 });
 
@@ -260,75 +260,79 @@ if (userDisplay) {
 //กร้ดอีเห้ยยยยยย
 
 function getCurrentUser() {
-  return localStorage.getItem("loggedInUser");
+    return localStorage.getItem("loggedInUser");
 }
 
 function updateCartBadge() {
-  const user = getCurrentUser();
-  if (!user) return;
-  const cart = JSON.parse(localStorage.getItem(`cart_${user}`)) || [];
-  const badge = document.getElementById("total-number");
-  if (badge) {
-    badge.textContent = cart.length;
-  }
+    const user = getCurrentUser();
+    if (!user) return;
+    const cart = JSON.parse(localStorage.getItem(`cart_${user}`)) || [];
+    const badge = document.getElementById("total-number");
+    if (badge) {
+        badge.textContent = cart.length;
+    }
 }
 
 function showCart() {
-  const user = getCurrentUser();
-  if (!user) {
-    alert("กรุณาล็อกอินก่อนดูตะกร้า!");
-    return;
-  }
+    const user = getCurrentUser();
+    if (!user) {
+        alert("กรุณาล็อกอินก่อนดูตะกร้า!");
+        return;
+    }
 
-  const cart = JSON.parse(localStorage.getItem(`cart_${user}`)) || [];
-  const container = document.getElementById("cartItems");
-  const totalPrice = document.getElementById("totalPrice");
-  const checkoutPage = document.getElementById("checkoutPage");
+    const cart = JSON.parse(localStorage.getItem(`cart_${user}`)) || [];
+    const container = document.getElementById("cartItems");
+    const totalPrice = document.getElementById("totalPrice");
+    const checkoutPage = document.getElementById("checkoutPage");
 
-  let total = 0;
-  container.innerHTML = "";
-  cart.forEach((item, index) => {
-    total += item.price;
-    container.innerHTML += `
+    let total = 0;
+    container.innerHTML = "";
+    cart.forEach((item, index) => {
+        total += item.price;
+        container.innerHTML += `
       <p>${item.name} - $${item.price}
         <button onclick="removeItem(${index})">ลบ</button>
       </p>`;
-  });
+    });
 
-  totalPrice.textContent = `Total: $${total}`;
-  checkoutPage.style.display = "block";
-  updateCartBadge();
+    totalPrice.textContent = `Total: $${total}`;
+    checkoutPage.style.display = "block";
+    updateCartBadge();
 }
 
 document.getElementById("checkoutBtn")?.addEventListener("click", (e) => {
-  e.preventDefault();
-  showCart();
+    e.preventDefault();
+    showCart();
 });
 
 document.getElementById("closeCheckoutBtn")?.addEventListener("click", () => {
-  document.getElementById("checkoutPage").style.display = "none";
+    document.getElementById("checkoutPage").style.display = "none";
 });
 
 document.getElementById("payBtn")?.addEventListener("click", () => {
-  const user = getCurrentUser();
-  if (!user) return;
+    const user = getCurrentUser();
+    if (!user) return;
 
-  const confirmPay = confirm("คุณต้องการชำระเงินใช่หรือไม่?");
-  if (confirmPay) {
-    alert("ชำระเงินสำเร็จ!");
-    localStorage.removeItem(`cart_${user}`);
-    showCart();
-  }
+    const confirmPay = confirm("คุณต้องการชำระเงินใช่หรือไม่?");
+    if (confirmPay) {
+        alert("ชำระเงินสำเร็จ!");
+        localStorage.removeItem(`cart_${user}`);
+        showCart();
+    }
 });
 
 window.removeItem = function (index) {
-  const user = getCurrentUser();
-  let cart = JSON.parse(localStorage.getItem(`cart_${user}`)) || [];
-  cart.splice(index, 1);
-  localStorage.setItem(`cart_${user}`, JSON.stringify(cart));
-  showCart();
+    const user = getCurrentUser();
+    let cart = JSON.parse(localStorage.getItem(`cart_${user}`)) || [];
+    cart.splice(index, 1);
+    localStorage.setItem(`cart_${user}`, JSON.stringify(cart));
+    showCart();
 };
 
 document.addEventListener("DOMContentLoaded", updateCartBadge);
+
+
+
+
 
 

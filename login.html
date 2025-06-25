@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8" />
   <title>เข้าสู่ระบบ</title>
@@ -13,6 +14,7 @@
       height: 100vh;
       margin: 0;
     }
+
     .login-box {
       background-color: white;
       padding: 40px;
@@ -21,17 +23,21 @@
       width: 300px;
       text-align: center;
     }
+
     .login-box h2 {
       margin-bottom: 20px;
       color: #333;
     }
-    input[type="text"], input[type="password"] {
+
+    input[type="text"],
+    input[type="password"] {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
+
     button {
       width: 100%;
       padding: 10px;
@@ -43,20 +49,24 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
+
     button:hover {
       background-color: #5a67d8;
     }
+
     .error {
       color: red;
       font-size: 0.9em;
       margin-top: 5px;
     }
+
     .logout-btn {
       margin-top: 20px;
       background-color: #e53e3e;
     }
   </style>
 </head>
+
 <body>
   <div class="login-box">
     <h2>เข้าสู่ระบบ</h2>
@@ -67,18 +77,30 @@
       <div class="error" id="errorMsg"></div>
       <button type="submit">เข้าสู่ระบบ</button>
     </form>
+    <!-- ปุ่มนี้ไม่มีแล้ว -->
     <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+
   </div>
 
   <script>
+    //แสดงรายชื่อผู้เคยเข้าสู่ระบบ
+    let history = JSON.parse(localStorage.getItem("loginHistory")) || [];
+    console.log("รายชื่อผู้เคยเข้าสู่ระบบ:", history);
+
     const form = document.getElementById("loginForm");
     const errorMsg = document.getElementById("errorMsg");
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value;
+      const password = document.getElementById("password").value.trim();
       const confirmPassword = document.getElementById("confirmPassword").value;
+
+
+      if (!username || !password || !confirmPassword) {
+        errorMsg.textContent = "กรุณากรอกข้อมูลให้ครบทุกช่อง";
+        return;
+      }
 
       if (password !== confirmPassword) {
         errorMsg.textContent = "รหัสผ่านไม่ตรงกัน";
@@ -87,16 +109,31 @@
 
       if (username && password) {
         localStorage.setItem("loggedInUser", username);
+
+        // ✅ เก็บชื่อผู้ใช้งานที่เคยเข้าสู่ระบบ
+        let loginHistory = JSON.parse(localStorage.getItem("loginHistory")) || [];
+        if (!loginHistory.includes(username)) {
+          loginHistory.push(username);
+          localStorage.setItem("loginHistory", JSON.stringify(loginHistory));
+        }
+
         alert("เข้าสู่ระบบสำเร็จ: " + username);
         window.location.href = "index.html";
       }
     });
+
 
     function logout() {
       localStorage.removeItem("loggedInUser");
       alert("ออกจากระบบแล้ว");
       location.reload();
     }
+
+    if (!localStorage.getItem("loggedInUser")) {
+      document.querySelector(".logout-btn").style.display = "none";
+    }
+
   </script>
 </body>
+
 </html>
